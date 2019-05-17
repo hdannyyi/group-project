@@ -1,10 +1,9 @@
 "use strict";
 
 // Global Variables
-let lat, long, name;
-let results = [];
 
 function getPhoneNum(){
+  let lat, long, name;
   const buttonElement = document.getElementById('btn');
   buttonElement.addEventListener('click', function(event){
     let phoneNum = document.getElementById('input-number').value;
@@ -13,10 +12,11 @@ function getPhoneNum(){
     .then(function(data){
       lat = data.current_addresses[0].lat_long.latitude;
       long = data.current_addresses[0].lat_long.longitude;
-      name = data.belongs_to.name;
+      //name = data.belongs_to.name;
       console.log(lat);
       console.log(long);
-      console.log('Hello ' + name);
+      //console.log('Hello ' + name);
+      getResult(lat, long)
     });
   });
 }
@@ -25,46 +25,13 @@ function getPhoneNum(){
 // users name(global) and list restaurants near the latitude and
 // longitude. If user's name is null or undefined return a generic
 // welcome msg
-
-function getResult(){
-  getPhoneNum();
-  const URL = `https://api.yelp.com/v3/businesses/search?latitude=${lat}&longitude=${long}`;
+function getResult(lat, long){
+  const URL = `http://localhost:3000/https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${long}&radius=8000&type=restaurant&key=AIzaSyCMVTDajdIApWYfNkHLIJmm6jeK7e0h1mM`;
   get(URL)
-  .then(function(data){
-    console.log(data);
-  })
-
-  $.ajax({
-    url: URL,
-    headers: {
-      'Authorization':'Bearer m8Y5yfzgix4d7-jmqRxSgXc6_NkNQ9AKgc_jtOoSzb327a4RpaES5Y51-qFnTBgH9a-QnrEef-W3CxeXM9eIuQO1rM7BsU2Pdk_twCF9pFcigopNPAy1jpYfsfraXHYx',
-    },
-      method: 'GET',
-      dataType: 'json',
-      success: function(data){
-        //grab the results from the API JSON resturn
-        let totalResults = data.total;
-        //if results are greater than 0, continue
-        if(totalResults > 0){
-          $.each(data.businesses, function(i, item){
-            let id = item.id;
-            let alias = item.alias;
-            let phone = item.display_phone;
-            let image = item.image_url;
-            let name = item.name;
-            let rating = item.rating;
-            let reviewCount = item.review_count;
-            let address = item.location.address1;
-            let city = item.location.city;
-            let state = item.location.state;
-            let zipcode = item.location.zip_code;
-            console.log(name);
-            console.log(rating);
-          });
-        } else {
-          console.log('No results');
-        }
-      }
+  .then(data => {
+    for(let i = 0; i < 10; i++){
+      console.log(data.results[i]);
+    }
   });
 }
 
@@ -77,4 +44,3 @@ function addItem(item){
 }
 
 getPhoneNum();
-//getResult();
