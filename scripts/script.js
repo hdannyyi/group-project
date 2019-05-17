@@ -30,17 +30,49 @@ function getResult(lat, long){
   get(URL)
   .then(data => {
     for(let i = 0; i < 10; i++){
-      console.log(data.results[i]);
+
+      addRestName(data.results[i].name);
+      addRating(data.results[i].rating);
+      addAddress(data.results[i].vicinity);
+      addHours(data.results[i].opening_hours.open_now);
     }
   });
 }
 
-function addItem(item){
+function addRestName(item){
   const resultList = document.getElementById('main__container--list');
-  const resultItem = document.createElement('li');
+  const resultName = document.createElement('h3');
 
-  resultItem.textContent = item.businesses;
-  resultList.append(resultItem);
+  resultName.textContent = item;
+  resultList.append(resultName);
+}
+
+function addRating(item){
+  const resultList = document.getElementById('main__container--list');
+  const resultRating = document.createElement('li');
+
+  resultRating.textContent = item;
+  resultList.append(resultRating);
+}
+
+function addAddress(item){
+  const resultList = document.getElementById('main__container--list');
+  const resultAddress = document.createElement('li');
+
+  resultAddress.textContent = item;
+  resultList.append(resultAddress);
+}
+
+function addHours(item){
+  const resultList = document.getElementById('main__container--list');
+  const resultHours = document.createElement('li');
+
+  resultHours.textContent = item;
+  if(item === true){
+    resultList.append("Open");
+  }else{
+    resultList.append("Closed");
+  }
 }
 
 getPhoneNum();
