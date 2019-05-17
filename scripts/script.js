@@ -1,7 +1,5 @@
 "use strict";
 
-// Global Variables
-
 function getPhoneNum(){
   let lat, long, name;
   const buttonElement = document.getElementById('btn');
@@ -12,27 +10,33 @@ function getPhoneNum(){
     .then(function(data){
       lat = data.current_addresses[0].lat_long.latitude;
       long = data.current_addresses[0].lat_long.longitude;
-      //name = data.belongs_to.name;
-      console.log(lat);
-      console.log(long);
-      //console.log('Hello ' + name);
-      getResult(lat, long)
+      if(data.belongs_to === undefined || data.belongs_to === null || data.belongs_to.name === null || data.belongs_to.name === undefined){
+        console.log(lat);
+        console.log(long);
+        getResult(lat, long);
+      }else{
+        name = data.belongs_to.name;
+        console.log('Hello ' + name);
+        getResult(lat, long, name);
+      }
     });
   });
 }
 
-// Once the user has inputted their number, prompt a welcome message
-// users name(global) and list restaurants near the latitude and
-// longitude. If user's name is null or undefined return a generic
-// welcome msg
-function getResult(lat, long){
+function getResult(lat, long, name){
   const URL = `http://localhost:3000/https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${long}&radius=8000&type=restaurant&key=AIzaSyCMVTDajdIApWYfNkHLIJmm6jeK7e0h1mM`;
+  if(name !== undefined || null){
+    greeting(name);
+  }
   get(URL)
   .then(data => {
     for(let i = 0; i < 10; i++){
       addRestName(data.results[i].name);
       addRating(data.results[i].rating);
       addAddress(data.results[i].vicinity);
+      if(data.results[i].price_level !== undefined){
+        addPriceLevel(data.results[i].price_level);
+      }
       if(data.results[i].opening_hours !== undefined){
         if(data.results[i].opening_hours.open_now !== undefined){
           addHours(data.results[i].opening_hours.open_now);
@@ -40,6 +44,14 @@ function getResult(lat, long){
       }
     }
   });
+}
+
+function greeting(item){
+  const resultList = document.getElementById('main__container--list');
+  const resultName = document.createElement('h2');
+
+  resultName.textContent = 'Hello ' + item + '!';
+  resultList.append(resultName);
 }
 
 function addRestName(item){
@@ -52,9 +64,27 @@ function addRestName(item){
 
 function addRating(item){
   const resultList = document.getElementById('main__container--list');
-  const resultRating = document.createElement('li');
+  let resultRating = document.createElement('li');
 
-  resultRating.textContent = item;
+  if(item >= 0 && item <= 1){
+    resultRating.innerHTML = '<i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>';
+  }else if(item > 1 && item <= 1.5){
+    resultRating.innerHTML = '<i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>';
+  }else if(item > 1.5 && item <= 2){
+    resultRating.innerHTML = '<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>';
+  }else if(item > 2 && item <= 2.5){
+    resultRating.innerHTML = '<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i>';
+  }else if(item > 2.5 && item <= 3){
+    resultRating.innerHTML = '<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>';
+  }else if(item > 3 && item <= 3.5){
+    resultRating.innerHTML = '<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>';
+  }else if(item >= 3.5 && item <= 4){
+    resultRating.innerHTML = '<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>';
+  }else if(item > 4 && item <= 4.5){
+    resultRating.innerHTML = '<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>';
+  }else if(item > 4.5){
+    resultRating.innerHTML = '<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>';
+  }
   resultList.append(resultRating);
 }
 
@@ -68,17 +98,40 @@ function addAddress(item){
 
 function addHours(item){
   const resultList = document.getElementById('main__container--list');
-  const resultHours = document.createElement('li');
+  let resultHours = document.createElement('li');
 
-  resultHours.textContent = item;
   if(item === true){
-    resultList.append("Open");
+    resultHours.textContent = 'Open\n';
+    resultList.append(resultHours);
   }else if(item === undefined || item === null){
-    resultList.append("Hours Unavailable");
+    resultHours.textContent = 'Hours Unavailable\n';
+    resultList.append(resultHours);
   }
   else{
-    resultList.append("Closed");
+    resultHours.textContent = 'Closed\n';
+    resultList.append(resultHours);
   }
 }
 
+function addPriceLevel(item){
+  const resultList = document.getElementById('main__container--list');
+  let dollarIcon = document.createElement('li');
+
+  if(item === 1){
+    dollarIcon.innerHTML = '$\n';
+    resultList.append(dollarIcon);
+  }else if(item === 2){
+    dollarIcon.textContent = '$$\n';
+    resultList.append(dollarIcon);
+  }else if(item === 3){
+    dollarIcon.textContent = '$$$\n';
+    resultList.append(dollarIcon);
+  }else if(item === 4){
+    dollarIcon.textContent = '$$$$\n';
+    resultList.append(dollarIcon);
+  }else if(item === 5){
+    dollarIcon.textContent = '$$$$$\n';
+    resultList.append(dollarIcon);
+  }
+}
 getPhoneNum();

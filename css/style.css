@@ -1,0 +1,16 @@
+
+ul {
+  list-style: none;
+  text-decoration: none;
+}
+
+.userInput {
+  display: grid;
+  justify-content: center;
+}
+
+.input--field {
+  width: 20rem;
+  height: 3rem;
+  font-size: 2rem;
+}
