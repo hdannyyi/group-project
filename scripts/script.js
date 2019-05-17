@@ -30,11 +30,14 @@ function getResult(lat, long){
   get(URL)
   .then(data => {
     for(let i = 0; i < 10; i++){
-
       addRestName(data.results[i].name);
       addRating(data.results[i].rating);
       addAddress(data.results[i].vicinity);
-      addHours(data.results[i].opening_hours.open_now);
+      if(data.results[i].opening_hours !== undefined){
+        if(data.results[i].opening_hours.open_now !== undefined){
+          addHours(data.results[i].opening_hours.open_now);
+        }
+      }
     }
   });
 }
@@ -70,7 +73,10 @@ function addHours(item){
   resultHours.textContent = item;
   if(item === true){
     resultList.append("Open");
-  }else{
+  }else if(item === undefined || item === null){
+    resultList.append("Hours Unavailable");
+  }
+  else{
     resultList.append("Closed");
   }
 }
