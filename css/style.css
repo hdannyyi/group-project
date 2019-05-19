@@ -1,16 +1,37 @@
 
 ul {
+  font-family: 'Ubuntu', sans-serif;
   list-style: none;
   text-decoration: none;
 }
 
+body{
+  margin:0;
+}
+
 .userInput {
+  background-size: 1280px 700px;
+  background-image: url('../images/hero.jpg');
   display: grid;
   justify-content: center;
+  padding-bottom: 15rem;
 }
 
 .input--field {
-  width: 20rem;
+  margin-top: 16rem;
+  font-family: 'Montserrat', sans-serif;
+  text-align: center;
+  width: 28rem;
   height: 3rem;
   font-size: 2rem;
+}
+
+.btn {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #FC494B;
+  color: white;
+  margin-top: 1rem;
+  font-size: 1.5rem;
+  width: 14rem;
+  margin-left: 7rem;
 }
