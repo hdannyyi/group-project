@@ -5,18 +5,15 @@ function getPhoneNum(){
   const buttonElement = document.getElementById('btn');
   buttonElement.addEventListener('click', function(event){
     let phoneNum = document.getElementById('input-number').value;
-    const URL = `https://proapi.whitepages.com/3.1/phone?api_key=46b21a543080471496fe3c4b3e2b8d4f&phone=${phoneNum}`;
+    const URL = `https://proapi.whitepages.com/3.1/phone?api_key=d1e09120eeba48d2ac8fbeb94ae853c7&phone=${phoneNum}`;
     get(URL)
     .then(function(data){
       lat = data.current_addresses[0].lat_long.latitude;
       long = data.current_addresses[0].lat_long.longitude;
       if(data.belongs_to === undefined || data.belongs_to === null || data.belongs_to.name === null || data.belongs_to.name === undefined){
-        console.log(lat);
-        console.log(long);
         getResult(lat, long);
       }else{
         name = data.belongs_to.name;
-        console.log('Hello ' + name);
         getResult(lat, long, name);
       }
     });
@@ -25,15 +22,16 @@ function getPhoneNum(){
 
 function getResult(lat, long, name){
   const URL = `http://localhost:3000/https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${long}&radius=8000&type=restaurant&key=AIzaSyCMVTDajdIApWYfNkHLIJmm6jeK7e0h1mM`;
+  let scroll = document.getElementById('main__container');
   if(name !== undefined || null){
     greeting(name);
   }
   get(URL)
   .then(data => {
-    for(let i = 0; i < 10; i++){
+    for(let i = 0; i < 30; i++){
       addRestName(data.results[i].name);
-      addRating(data.results[i].rating);
       addAddress(data.results[i].vicinity);
+      addRating(data.results[i].rating);
       if(data.results[i].price_level !== undefined){
         addPriceLevel(data.results[i].price_level);
       }
@@ -42,15 +40,17 @@ function getResult(lat, long, name){
           addHours(data.results[i].opening_hours.open_now);
         }
       }
+      scroll.scrollIntoView({behavior:'smooth'});
     }
   });
 }
 
 function greeting(item){
-  const resultList = document.getElementById('main__container--list');
+  const resultList = document.getElementById('main__container--id');
   const resultName = document.createElement('h2');
 
-  resultName.textContent = 'Hello ' + item + '!';
+  resultName.innerHTML = 'Hello ' + item + '!';
+  resultName.setAttribute('style', 'text-align:center;');
   resultList.append(resultName);
 }
 
@@ -59,6 +59,7 @@ function addRestName(item){
   const resultName = document.createElement('h3');
 
   resultName.textContent = item;
+  resultName.setAttribute('style', 'margin-bottom: 0;');
   resultList.append(resultName);
 }
 
@@ -106,8 +107,7 @@ function addHours(item){
   }else if(item === undefined || item === null){
     resultHours.textContent = 'Hours Unavailable\n';
     resultList.append(resultHours);
-  }
-  else{
+  }else{
     resultHours.textContent = 'Closed\n';
     resultList.append(resultHours);
   }
@@ -118,7 +118,7 @@ function addPriceLevel(item){
   let dollarIcon = document.createElement('li');
 
   if(item === 1){
-    dollarIcon.innerHTML = '$\n';
+    dollarIcon.textContent = '$\n';
     resultList.append(dollarIcon);
   }else if(item === 2){
     dollarIcon.textContent = '$$\n';
