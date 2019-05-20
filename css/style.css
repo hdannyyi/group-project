@@ -9,7 +9,7 @@ ul {
 }
 
 .userInput {
-  background-size: 1280px 700px;
+  background-size: 1280px 750px;
   background-image: url('../images/hero.jpg');
   display: grid;
   justify-content: center;

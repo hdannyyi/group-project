@@ -46,8 +46,8 @@ function getResult(lat, long, name){
 }
 
 function greeting(item){
-  const resultList = document.getElementById('main__container--id');
-  const resultName = document.createElement('h2');
+  const resultList = document.getElementById('main__container--list');
+  const resultName = document.createElement('h1');
 
   resultName.innerHTML = 'Hello ' + item + '!';
   resultName.setAttribute('style', 'text-align:center;');
