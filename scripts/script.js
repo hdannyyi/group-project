@@ -21,7 +21,7 @@ function getPhoneNum(){
 }
 
 function getResult(lat, long, name){
-  const URL = `http://localhost:3000/https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${long}&radius=8000&type=restaurant&key=AIzaSyCMVTDajdIApWYfNkHLIJmm6jeK7e0h1mM`;
+  const URL = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${long}&radius=8000&type=restaurant&key=AIzaSyCMVTDajdIApWYfNkHLIJmm6jeK7e0h1mM`;
   let scroll = document.getElementById('main__container');
   if(name !== undefined || null){
     greeting(name);
