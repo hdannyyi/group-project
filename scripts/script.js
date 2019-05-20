@@ -1,6 +1,5 @@
 "use strict";
 
-const divResult = document.getElementById('main__container');
 function getPhoneNum(){
   let lat, long, name;
   const buttonElement = document.getElementById('btn');
@@ -12,12 +11,9 @@ function getPhoneNum(){
       lat = data.current_addresses[0].lat_long.latitude;
       long = data.current_addresses[0].lat_long.longitude;
       if(data.belongs_to === undefined || data.belongs_to === null || data.belongs_to.name === null || data.belongs_to.name === undefined){
-        console.log(lat);
-        console.log(long);
         getResult(lat, long);
       }else{
         name = data.belongs_to.name;
-        console.log('Hello ' + name);
         getResult(lat, long, name);
       }
     });
@@ -34,8 +30,8 @@ function getResult(lat, long, name){
   .then(data => {
     for(let i = 0; i < 30; i++){
       addRestName(data.results[i].name);
-      addRating(data.results[i].rating);
       addAddress(data.results[i].vicinity);
+      addRating(data.results[i].rating);
       if(data.results[i].price_level !== undefined){
         addPriceLevel(data.results[i].price_level);
       }
@@ -50,11 +46,11 @@ function getResult(lat, long, name){
 }
 
 function greeting(item){
-  const resultList = document.getElementById('main__container--list');
-  const resultName = document.createElement('h1');
+  const resultList = document.getElementById('main__container--id');
+  const resultName = document.createElement('h2');
 
   resultName.innerHTML = 'Hello ' + item + '!';
-  resultName.setAttribute('style', 'text-align:center;')
+  resultName.setAttribute('style', 'text-align:center;');
   resultList.append(resultName);
 }
 
@@ -111,8 +107,7 @@ function addHours(item){
   }else if(item === undefined || item === null){
     resultHours.textContent = 'Hours Unavailable\n';
     resultList.append(resultHours);
-  }
-  else{
+  }else{
     resultHours.textContent = 'Closed\n';
     resultList.append(resultHours);
   }

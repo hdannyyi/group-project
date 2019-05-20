@@ -1,12 +1,11 @@
+body{
+  margin:0;
+}
 
 ul {
   font-family: 'Ubuntu', sans-serif;
   list-style: none;
   text-decoration: none;
-}
-
-body{
-  margin:0;
 }
 
 .userInput {
