@@ -1,5 +1,3 @@
-"use strict";
-
 function get(URL){
   return fetch(URL)
     .then(response => response.json())

@@ -1,11 +1,9 @@
-"use strict";
-
 function getPhoneNum(){
   let lat, long, name;
   const buttonElement = document.getElementById('btn');
   buttonElement.addEventListener('click', function(event){
     let phoneNum = document.getElementById('input-number').value;
-    const URL = `https://proapi.whitepages.com/3.1/phone?api_key=d1e09120eeba48d2ac8fbeb94ae853c7&phone=${phoneNum}`;
+    const URL = `https://proapi.whitepages.com/3.1/phone?api_key=648c638c34334b1eb33bdc8021d51c9e&phone=${phoneNum}`;
     get(URL)
     .then(function(data){
       lat = data.current_addresses[0].lat_long.latitude;
@@ -21,50 +19,59 @@ function getPhoneNum(){
 }
 
 function getResult(lat, long, name){
-  const URL = `http://my-little-cors-proxy.herokuapp.com/https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${long}&radius=8000&type=restaurant&key=AIzaSyCMVTDajdIApWYfNkHLIJmm6jeK7e0h1mM`;
+  const URL = `http://localhost:3000/https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${long}&radius=8000&type=restaurant&key=AIzaSyCMVTDajdIApWYfNkHLIJmm6jeK7e0h1mM`;
   let scroll = document.getElementById('main__container');
   if(name !== undefined || null){
     greeting(name);
   }
   get(URL)
   .then(data => {
-    for(let i = 0; i < 30; i++){
-      addRestName(data.results[i].name);
-      addAddress(data.results[i].vicinity);
-      addRating(data.results[i].rating);
+    for(let i = 0; i < 20; i++){
+      const resultDivMain = document.getElementById('main__container');
+      const resultUL= document.createElement('ul');
+      const resultList = document.createElement('li');
+
+      let openOrClosed, price;
+      let restName = addRestName(data.results[i].name);
+      let address = addAddress(data.results[i].vicinity);
+      let rating = addRating(data.results[i].rating);
+
       if(data.results[i].price_level !== undefined){
-        addPriceLevel(data.results[i].price_level);
+        price = addPriceLevel(data.results[i].price_level);
       }
       if(data.results[i].opening_hours !== undefined){
         if(data.results[i].opening_hours.open_now !== undefined){
-          addHours(data.results[i].opening_hours.open_now);
+          openOrClosed = addHours(data.results[i].opening_hours.open_now);
         }
       }
-      scroll.scrollIntoView({behavior:'smooth'});
+      resultList.append(restName, address, rating, price, openOrClosed);
+      resultUL.setAttribute('style', 'margin: 0; padding-left: 1.5rem;');
+      resultUL.append(resultList);
+      resultDivMain.append(resultUL);
     }
+    scroll.scrollIntoView({behavior:'smooth'});
   });
 }
 
 function greeting(item){
-  const resultList = document.getElementById('main__container--list');
+  const resultDiv = document.getElementById('main__container')
   const resultName = document.createElement('h1');
 
   resultName.innerHTML = 'Hello ' + item + '!';
-  resultName.setAttribute('style', 'text-align:center;');
-  resultList.append(resultName);
+  resultName.setAttribute('style', 'text-align:center; color:#384259;');
+  resultDiv.append(resultName);
 }
 
 function addRestName(item){
-  const resultList = document.getElementById('main__container--list');
   const resultName = document.createElement('h3');
 
   resultName.textContent = item;
   resultName.setAttribute('style', 'margin-bottom: 0;');
-  resultList.append(resultName);
+
+  return resultName;
 }
 
 function addRating(item){
-  const resultList = document.getElementById('main__container--list');
   let resultRating = document.createElement('li');
 
   if(item >= 0 && item <= 1){
@@ -86,52 +93,48 @@ function addRating(item){
   }else if(item > 4.5){
     resultRating.innerHTML = '<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>';
   }
-  resultList.append(resultRating);
+
+  resultRating.setAttribute('style', 'text-decoration: none;');
+  return resultRating;
 }
 
 function addAddress(item){
-  const resultList = document.getElementById('main__container--list');
   const resultAddress = document.createElement('li');
 
   resultAddress.textContent = item;
-  resultList.append(resultAddress);
+  resultAddress.setAttribute('style', 'text-decoration: none;');
+  return resultAddress;
 }
 
 function addHours(item){
-  const resultList = document.getElementById('main__container--list');
   let resultHours = document.createElement('li');
 
   if(item === true){
     resultHours.textContent = 'Open\n';
-    resultList.append(resultHours);
   }else if(item === undefined || item === null){
     resultHours.textContent = 'Hours Unavailable\n';
-    resultList.append(resultHours);
   }else{
     resultHours.textContent = 'Closed\n';
-    resultList.append(resultHours);
   }
+  resultHours.setAttribute('style', 'text-decoration: none;');
+  return resultHours;
 }
 
 function addPriceLevel(item){
-  const resultList = document.getElementById('main__container--list');
   let dollarIcon = document.createElement('li');
 
   if(item === 1){
     dollarIcon.textContent = '$\n';
-    resultList.append(dollarIcon);
   }else if(item === 2){
     dollarIcon.textContent = '$$\n';
-    resultList.append(dollarIcon);
   }else if(item === 3){
     dollarIcon.textContent = '$$$\n';
-    resultList.append(dollarIcon);
   }else if(item === 4){
     dollarIcon.textContent = '$$$$\n';
-    resultList.append(dollarIcon);
   }else if(item === 5){
     dollarIcon.textContent = '$$$$$\n';
-    resultList.append(dollarIcon);
   }
+  dollarIcon.setAttribute('style', 'text-decoration: none;');
+  return dollarIcon;
 }
 getPhoneNum();
